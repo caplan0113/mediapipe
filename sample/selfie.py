@@ -1,4 +1,5 @@
 import cv2
+import sys
 import mediapipe as mp
 import numpy as np
 mp_drawing = mp.solutions.drawing_utils
@@ -74,4 +75,4 @@ def webcam(camid):
         break
   cap.release()
 
-if __name__ == "__main__": webcam(1)
+if __name__ == "__main__": webcam(int(sys.argv[1]))

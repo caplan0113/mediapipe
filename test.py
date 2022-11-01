@@ -1,8 +1,12 @@
 import cv2
+import sys
+from time import time 
 import mediapipe as mp
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_hands = mp.solutions.hands
+
+D = 2 
 
 # For static images:
 def images():
@@ -48,6 +52,7 @@ def images():
 
 # For webcam input:
 def webcam(camid):
+  start = time()
   cap = cv2.VideoCapture(camid)
   with mp_hands.Hands(
       model_complexity=0,
@@ -77,10 +82,26 @@ def webcam(camid):
               mp_hands.HAND_CONNECTIONS,
               mp_drawing_styles.get_default_hand_landmarks_style(),
               mp_drawing_styles.get_default_hand_connections_style())
+
+        if (time() - start) >= D:
+          printhands(results)
+          start = time()
       # Flip the image horizontally for a selfie-view display.
       cv2.imshow('MediaPipe Hands', cv2.flip(image, 1))
+			
+
       if cv2.waitKey(5) & 0xFF == 27:
         break
   cap.release()
 
-if __name__ == "__main__": webcam(1)
+def printhands(result):
+	landmarks = result.multi_hand_landmarks
+	wlandmarks = result.multi_hand_world_landmarks
+	handedness = result.multi_handedness
+
+	for l, w, n in zip(landmarks, wlandmarks, handedness):
+		print("l:", type(l.landmark))
+		print("n:", n)
+		print("*"*10)
+
+if __name__ == "__main__": webcam(int(sys.argv[1]))

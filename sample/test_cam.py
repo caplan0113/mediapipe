@@ -1,6 +1,7 @@
 import cv2
+import sys
 
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(int(sys.argv[1]))
 
 
 while True:
